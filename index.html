@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compound Interest Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+      }
+      form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type='number'] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #e8f6f3;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Compound Interest Calculator</h1>
+    <form id="calculatorForm">
+      <label for="initialAmount">Initial Amount:</label>
+      <input type="number" id="initialAmount" required /><br />
+
+      <label for="interestRate">Interest Rate (%):</label>
+      <input type="number" id="interestRate" step="0.01" required /><br />
+
+      <label for="interestRateAppliedPerPeriod"
+        >Interest Rate Applied Per Period:</label
+      >
+      <input type="number" id="interestRateAppliedPerPeriod" required /><br />
+
+      <label for="period">Period:</label>
+      <input type="number" id="period" required /><br />
+
+      <label for="inflationRate">Inflation Rate (%):</label>
+      <input type="number" id="inflationRate" step="0.01" required /><br />
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+      // Initial data
+      const initialData = {
+        initialAmount: 100,
+        interestRate: 5,
+        interestRateAppliedPerPeriod: 1,
+        period: 10,
+        inflationRate: 0,
+      };
+
+      // Set initial values
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('initialAmount').value =
+          initialData.initialAmount;
+        document.getElementById('interestRate').value =
+          initialData.interestRate;
+        document.getElementById('interestRateAppliedPerPeriod').value =
+          initialData.interestRateAppliedPerPeriod;
+        document.getElementById('period').value = initialData.period;
+        document.getElementById('inflationRate').value =
+          initialData.inflationRate;
+      });
+
+      // Existing form submission code
+      document
+        .getElementById('calculatorForm')
+        .addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          // Get form values directly from input elements
+          const initialAmount = Number(
+            document.getElementById('initialAmount').value
+          );
+          const interestRate =
+            Number(document.getElementById('interestRate').value) / 100;
+          const interestRateAppliedPerPeriod = Number(
+            document.getElementById('interestRateAppliedPerPeriod').value
+          );
+          const period = Number(document.getElementById('period').value);
+          const inflationRate =
+            Number(document.getElementById('inflationRate').value) / 100;
+
+          const response = await fetch('/calculate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              compoundData: {
+                initialAmount,
+                interestRate,
+                interestRateAppliedPerPeriod,
+                period,
+              },
+              inflationRate,
+            }),
+          });
+
+          const result = await response.json();
+          document.getElementById(
+            'result'
+          ).textContent = `Result: ${result.result}`;
+        });
+    </script>
+  </body>
+</html>
